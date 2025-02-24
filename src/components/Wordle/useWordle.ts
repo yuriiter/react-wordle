@@ -1,5 +1,6 @@
 import { useReducer, useEffect } from "react";
 import WORD_LIST from "@/assets/dictionary.json";
+import { useEventListener } from "@/hooks/useEventListener";
 
 const wordOfTheDay = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 
@@ -41,8 +42,10 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
 export const useWordle = () => {
   const [state, dispatch] = useReducer(wordleReducer, initialState);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+  useEventListener(
+    document,
+    "keydown",
+    (e: KeyboardEvent) => {
       // if (state.gameOver) return;
       if (e.key === "Enter" && state.currentGuess.length === 5) {
         dispatch({ type: "SUBMIT_GUESS" });
@@ -54,10 +57,9 @@ export const useWordle = () => {
       } else if (state.currentGuess.length < 5 && /^[a-z]$/.test(e.key)) {
         dispatch({ type: "SET_GUESS", payload: state.currentGuess + e.key });
       }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [state]);
+    },
+    [state],
+  );
 
   return { state, dispatch, wordOfTheDay };
 };

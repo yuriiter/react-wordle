@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import "./Dialog.css";
+import { useEventListener } from "@/hooks/useEventListener";
 
 interface DialogProps {
   children: React.ReactNode;
@@ -19,16 +19,16 @@ export const Dialog = ({
   const isOpen =
     controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
 
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
+  useEventListener(
+    document,
+    "keydown",
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
         handleClose();
       }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen]);
+    },
+    [isOpen],
+  );
 
   useEffect(() => {
     if (isOpen) {
