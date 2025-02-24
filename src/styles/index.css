@@ -1,6 +1,12 @@
 @import "reset-css";
-@import "./typography.css";
 
-* {
-  box-sizing: border-box;
-}
+@import "./globals.css";
+
+@import "./animations.css";
+
+@import "./components/button.css";
+@import "./components/typography.css";
+@import "./components/dialog.css";
+@import "./components/toast.css";
+
+@import "./sections.css";
