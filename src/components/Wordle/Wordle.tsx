@@ -44,34 +44,39 @@ export const Wordle = () => {
   };
 
   return (
-    <div className="wordle-container">
-      <h1>Wordle</h1>
-      <p>Guess the 5 letter word. You have 6 tries.</p>
-      <div className="wordle-grid">
-        {state.guesses.map((guess, guessIndex) => (
-          <div className="wordle-row" key={guessIndex}>
-            {(
-              Array.from(
-                guessIndex === getCurrentRow()
-                  ? state.currentGuess.padEnd(5, " ")
-                  : guess.padEnd(5, " "),
-              ) as string[]
-            ).map((letter, letterIndex) => (
-              <div
-                className={cn(
-                  "wordle-tile",
-                  getTileClass(letter, guessIndex, letterIndex),
-                )}
-                style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
-                key={letterIndex}
-              >
-                <div className="wordle-tile__front">{letter}</div>
-                <div className="wordle-tile__back">{letter}</div>
-              </div>
-            ))}
-          </div>
-        ))}
+    <section className="section">
+      <div className="wordle-container">
+        <h1>Wordle</h1>
+        <p>
+          Guess the 5 letter word. You have 6 tries. Press ENTER to submit a
+          guess.
+        </p>
+        <div className="wordle-grid">
+          {state.guesses.map((guess, guessIndex) => (
+            <div className="wordle-row" key={guessIndex}>
+              {(
+                Array.from(
+                  guessIndex === getCurrentRow()
+                    ? state.currentGuess.padEnd(5, " ")
+                    : guess.padEnd(5, " "),
+                ) as string[]
+              ).map((letter, letterIndex) => (
+                <div
+                  className={cn(
+                    "wordle-tile",
+                    getTileClass(letter, guessIndex, letterIndex),
+                  )}
+                  style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
+                  key={letterIndex}
+                >
+                  <div className="wordle-tile__front">{letter}</div>
+                  <div className="wordle-tile__back">{letter}</div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };

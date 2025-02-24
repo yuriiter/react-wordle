@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import "./Toast.css";
 import { X } from "lucide-react";
 
 type ToastType = "success" | "error" | "info" | "warning";
