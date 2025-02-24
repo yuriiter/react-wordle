@@ -1,11 +1,14 @@
-import Dialog from "./components/Dialog/Dialog";
+import { Dialog } from "./components/Dialog/Dialog";
+import { ToastProvider } from "./components/Toast/Toast";
 import { Wordle } from "./components/Wordle/Wordle";
 
 function App() {
   return (
     <>
-      <Wordle />
-      <Dialog defaultOpen>Hello</Dialog>
+      <ToastProvider>
+        <Wordle />
+        <Dialog defaultOpen>Hello</Dialog>
+      </ToastProvider>
     </>
   );
 }
