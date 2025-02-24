@@ -6,19 +6,16 @@ const wordOfTheDay = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 const initialState = {
   guesses: Array(6).fill(""),
   currentGuess: "",
-  gameOver: false,
 };
 
 type WordleState = {
   guesses: string[];
   currentGuess: string;
-  gameOver: boolean;
 };
 
 type WordleAction =
   | { type: "SET_GUESS"; payload: string }
-  | { type: "SUBMIT_GUESS" }
-  | { type: "SET_GAME_OVER" };
+  | { type: "SUBMIT_GUESS" };
 
 const wordleReducer = (state: WordleState, action: WordleAction) => {
   switch (action.type) {
@@ -36,8 +33,6 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
           newGuesses.every((g) => g !== ""),
       };
     }
-    case "SET_GAME_OVER":
-      return { ...state, gameOver: true };
     default:
       return state;
   }
@@ -48,7 +43,7 @@ export const useWordle = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (state.gameOver) return;
+      // if (state.gameOver) return;
       if (e.key === "Enter" && state.currentGuess.length === 5) {
         dispatch({ type: "SUBMIT_GUESS" });
       } else if (e.key === "Backspace") {

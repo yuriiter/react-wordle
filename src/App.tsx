@@ -1,15 +1,14 @@
-import { Dialog } from "./components/Dialog/Dialog";
 import { ToastProvider } from "./components/Toast/Toast";
-import { Wordle } from "./components/Wordle/Wordle";
+import { GameStateProvider } from "./store/GameState";
+import { Container } from "lucide-react";
 
 function App() {
   return (
-    <>
+    <GameStateProvider>
       <ToastProvider>
-        <Wordle />
-        <Dialog defaultOpen>Hello</Dialog>
+        <Container />
       </ToastProvider>
-    </>
+    </GameStateProvider>
   );
 }
 
