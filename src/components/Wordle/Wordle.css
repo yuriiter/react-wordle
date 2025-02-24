@@ -9,7 +9,7 @@
   display: grid;
   grid-template-rows: repeat(6, 1fr);
   grid-gap: 8px;
-  margin-top: 20px;
+  margin-top: 90px;
 }
 
 .wordle-row {
