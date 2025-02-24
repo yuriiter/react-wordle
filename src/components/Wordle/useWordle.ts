@@ -1,11 +1,12 @@
-import { useReducer, useEffect } from "react";
+import { useReducer } from "react";
 import WORD_LIST from "@/assets/dictionary.json";
 import { useEventListener } from "@/hooks/useEventListener";
+import { useRandomItem } from "@/hooks/useRandomItem";
 
 const wordOfTheDay = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 
 const initialState = {
-  guesses: Array(6).fill(""),
+  guesses: Array(5).fill(""),
   currentGuess: "",
 };
 
@@ -16,7 +17,8 @@ type WordleState = {
 
 type WordleAction =
   | { type: "SET_GUESS"; payload: string }
-  | { type: "SUBMIT_GUESS" };
+  | { type: "SUBMIT_GUESS" }
+  | { type: "RESET" };
 
 const wordleReducer = (state: WordleState, action: WordleAction) => {
   switch (action.type) {
@@ -34,6 +36,9 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
           newGuesses.every((g) => g !== ""),
       };
     }
+    case "RESET": {
+      return { ...initialState };
+    }
     default:
       return state;
   }
@@ -41,6 +46,7 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
 
 export const useWordle = () => {
   const [state, dispatch] = useReducer(wordleReducer, initialState);
+  const [wordOfTheDay, resetWord] = useRandomItem(WORD_LIST);
 
   useEventListener(
     document,
@@ -61,5 +67,5 @@ export const useWordle = () => {
     [state],
   );
 
-  return { state, dispatch, wordOfTheDay };
+  return { state, dispatch, wordOfTheDay, resetWord };
 };

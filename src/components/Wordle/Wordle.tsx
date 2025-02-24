@@ -2,9 +2,14 @@ import { cn } from "@/utils";
 import { useWordle } from "./useWordle";
 import "./Wordle.css";
 import { CSSProperties } from "react";
+import { useToast } from "../Toast/Toast";
+import { useGameState } from "@/store/GameState";
+import { GAME_STATUS } from "@/constants";
 
 export const Wordle = () => {
-  const { state, wordOfTheDay } = useWordle();
+  const { state, dispatch, wordOfTheDay, resetWord } = useWordle();
+  const { dispatch: gameStateDispatch } = useGameState();
+  const { showToast } = useToast();
 
   const getTileClass = (
     letter: string,
@@ -43,13 +48,22 @@ export const Wordle = () => {
     return state.guesses.findIndex((guess) => guess === "");
   };
 
+  const restartGame = () => {
+    resetWord();
+    dispatch({ type: "RESET" });
+    gameStateDispatch({ type: "SET_STATUS", payload: GAME_STATUS.STARTING });
+  };
+
+  const revealWord = () =>
+    showToast(`Word of the day: ${wordOfTheDay}`, "info");
+
   return (
     <section className="section">
       <div className="wordle-container">
         <h1>Wordle</h1>
         <p>
-          Guess the 5 letter word. You have 6 tries. Press ENTER to submit a
-          guess.
+          Guess the 5 letter word. You have 5 tries. <br /> Press ENTER to
+          submit a guess and backspace to remove a letter.
         </p>
         <div className="wordle-grid">
           {state.guesses.map((guess, guessIndex) => (
@@ -75,6 +89,14 @@ export const Wordle = () => {
               ))}
             </div>
           ))}
+        </div>
+        <div className="wordle-container__buttons">
+          <button onClick={restartGame} className="button button--secondary">
+            Restart
+          </button>
+          <button onClick={revealWord} className="button button--secondary">
+            Reveal the word
+          </button>
         </div>
       </div>
     </section>
