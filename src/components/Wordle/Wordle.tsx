@@ -1,6 +1,7 @@
 import { cn } from "@/utils";
 import { useWordle } from "./useWordle";
 import "./Wordle.css";
+import { CSSProperties } from "react";
 
 export const Wordle = () => {
   const { state, wordOfTheDay } = useWordle();
@@ -27,14 +28,14 @@ export const Wordle = () => {
       .filter((l: string) => l === letter).length;
 
     if (letter === correctLetter) {
-      return "correct";
+      return "reveal-tile correct";
     } else if (
       wordOfTheDay.includes(letter) &&
       letterCountInGuess <= letterCountInWord
     ) {
-      return "present";
+      return "reveal-tile present";
     } else {
-      return "absent";
+      return "reveal-tile absent";
     }
   };
 
@@ -61,9 +62,11 @@ export const Wordle = () => {
                   "wordle-tile",
                   getTileClass(letter, guessIndex, letterIndex),
                 )}
+                style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
                 key={letterIndex}
               >
-                {letter}
+                <div className="wordle-tile__front">{letter}</div>
+                <div className="wordle-tile__back">{letter}</div>
               </div>
             ))}
           </div>
