@@ -9,7 +9,7 @@ interface DialogProps {
   defaultOpen?: boolean;
 }
 
-const Dialog = ({
+export const Dialog = ({
   children,
   isOpen: controlledIsOpen,
   onClose,
@@ -63,5 +63,3 @@ const Dialog = ({
     </div>
   );
 };
-
-export default Dialog;
