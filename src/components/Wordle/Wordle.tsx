@@ -10,10 +10,10 @@ export const Wordle = () => {
     guessIndex: number,
     letterIndex: number,
   ) => {
-    // if (guessIndex > state.guesses.findIndex((guess) => guess === ""))
-    //   return "";
-    // if (guessIndex === state.guesses.findIndex((guess) => guess === ""))
-    //   return "";
+    if (guessIndex > state.guesses.findIndex((guess) => guess === ""))
+      return "";
+    if (guessIndex === state.guesses.findIndex((guess) => guess === ""))
+      return "";
 
     const correctLetter = wordOfTheDay[letterIndex];
     const letterCountInWord = wordOfTheDay
@@ -55,7 +55,7 @@ export const Wordle = () => {
             ).map((letter, letterIndex) => (
               <div
                 className={cn(
-                  "wordle-title",
+                  "wordle-tile",
                   getTileClass(letter, guessIndex, letterIndex),
                 )}
                 key={letterIndex}
