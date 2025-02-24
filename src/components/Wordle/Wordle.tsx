@@ -12,8 +12,11 @@ export const Wordle = () => {
   ) => {
     if (guessIndex > state.guesses.findIndex((guess) => guess === ""))
       return "";
-    if (guessIndex === state.guesses.findIndex((guess) => guess === ""))
+
+    if (guessIndex === state.guesses.findIndex((guess) => guess === "")) {
+      if (letter !== " ") return "current-input";
       return "";
+    }
 
     const correctLetter = wordOfTheDay[letterIndex];
     const letterCountInWord = wordOfTheDay
