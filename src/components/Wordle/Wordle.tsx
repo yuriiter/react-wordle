@@ -5,6 +5,7 @@ import { CSSProperties } from "react";
 import { useToast } from "../Toast/Toast";
 import { useGameState } from "@/store/GameState";
 import { GAME_STATUS } from "@/constants";
+import { useEventListener } from "@/hooks/useEventListener";
 
 export const Wordle = () => {
   const { state, dispatch, wordOfTheDay, resetWord } = useWordle();
@@ -57,6 +58,16 @@ export const Wordle = () => {
   const revealWord = () =>
     showToast(`Word of the day: ${wordOfTheDay}`, "info");
 
+  useEventListener(
+    document,
+    "keydown",
+    (e) => {
+      if (e.shiftKey && e.key === "R") restartGame();
+      if (e.shiftKey && e.key === "W") revealWord();
+    },
+    [],
+  );
+
   return (
     <section className="section">
       <div className="wordle-container">
@@ -94,9 +105,11 @@ export const Wordle = () => {
         <div className="wordle-container__buttons">
           <button onClick={restartGame} className="button button--secondary">
             Restart
+            <span className="inline-keys">Shift + R</span>
           </button>
           <button onClick={revealWord} className="button button--secondary">
-            Reveal the word
+            Word reveal
+            <span className="inline-keys">Shift + W</span>
           </button>
         </div>
       </div>

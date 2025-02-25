@@ -35,9 +35,5 @@
   margin-top: 50px;
   display: flex;
   justify-content: center;
-  gap: 40px;
-
-  > .button {
-    width: 100px;
-  }
+  gap: 30px;
 }
