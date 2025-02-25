@@ -1,11 +1,10 @@
-import { useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import WORD_LIST from "@/assets/dictionary.json";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useRandomItem } from "@/hooks/useRandomItem";
 import { useToast } from "../Toast/Toast";
 import { useAnimationClass } from "@/hooks/useAnimationClass";
-
-const wordOfTheDay = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+import { addGuess, checkGuess, checkLose, checkWin } from "@/gameLogic";
 
 const initialState = {
   guesses: Array(5).fill("") as string[],
@@ -27,15 +26,10 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
     case "SET_GUESS":
       return { ...state, currentGuess: action.payload };
     case "SUBMIT_GUESS": {
-      const newGuesses = [...state.guesses];
-      newGuesses[newGuesses.findIndex((g) => g === "")] = state.currentGuess;
       return {
         ...state,
-        guesses: newGuesses,
+        guesses: addGuess(state.guesses, state.currentGuess),
         currentGuess: "",
-        gameOver:
-          state.currentGuess === wordOfTheDay ||
-          newGuesses.every((g) => g !== ""),
       };
     }
     case "RESET": {
@@ -47,17 +41,34 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
 };
 
 export const useWordle = () => {
+  const [showInstructiionsDialog, setShowInstructionsDialog] = useState(true);
   const [state, dispatch] = useReducer(wordleReducer, initialState);
   const [wordOfTheDay, resetWord] = useRandomItem(WORD_LIST);
   const { showToast } = useToast();
   const { triggerAnimation, nodeRef: animatedNodeRef } =
     useAnimationClass<HTMLDivElement>();
 
+  useEffect(() => {
+    if (checkWin(state.guesses, wordOfTheDay)) {
+      showToast("You have won! 🎉", "success");
+    } else if (checkLose(state.guesses)) {
+      showToast(
+        "You ran out of guesses, restart the game and try again!",
+        "error",
+      );
+    }
+  }, [state.guesses]);
+
   useEventListener(
     document,
     "keydown",
     (e: KeyboardEvent) => {
-      // if (state.gameOver) return;
+      if (
+        checkWin(state.guesses, wordOfTheDay) ||
+        checkLose(state.guesses) ||
+        showInstructiionsDialog
+      )
+        return;
       if (e.key === "Enter") {
         if (state.currentGuess.length !== 5) {
           triggerAnimation("shaking-row");
@@ -74,7 +85,7 @@ export const useWordle = () => {
         dispatch({ type: "SET_GUESS", payload: state.currentGuess + e.key });
       }
     },
-    [state],
+    [state, showInstructiionsDialog],
   );
 
   return {
@@ -83,5 +94,7 @@ export const useWordle = () => {
     wordOfTheDay,
     resetWord,
     animatedNodeRef,
+    showInstructiionsDialog,
+    setShowInstructionsDialog,
   };
 };

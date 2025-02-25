@@ -1,56 +1,26 @@
 import { cn } from "@/utils";
 import { useWordle } from "./useWordle";
 import "./Wordle.css";
-import { CSSProperties, useState } from "react";
+import { CSSProperties } from "react";
 import { useToast } from "../Toast/Toast";
 import { useGameState } from "@/store/GameState";
 import { GAME_STATUS } from "@/constants";
 import { useEventListener } from "@/hooks/useEventListener";
 import { Dialog } from "../Dialog/Dialog";
+import { getCurrentRow, getTileClass } from "@/gameLogic";
 
 export const Wordle = () => {
-  const [showInstructiionsDialog, setShowInstructionsDialog] = useState(true);
-  const { state, dispatch, wordOfTheDay, resetWord, animatedNodeRef } =
-    useWordle();
+  const {
+    state,
+    dispatch,
+    wordOfTheDay,
+    resetWord,
+    animatedNodeRef,
+    showInstructiionsDialog,
+    setShowInstructionsDialog,
+  } = useWordle();
   const { dispatch: gameStateDispatch } = useGameState();
   const { showToast } = useToast();
-
-  const getTileClass = (
-    letter: string,
-    guessIndex: number,
-    letterIndex: number,
-  ) => {
-    const firstEmptyRowIndex = state.guesses.findIndex((guess) => guess === "");
-    if (guessIndex > firstEmptyRowIndex && firstEmptyRowIndex !== -1) return "";
-
-    if (guessIndex === state.guesses.findIndex((guess) => guess === "")) {
-      if (letter !== " ") return "current-input";
-      return "";
-    }
-
-    const correctLetter = wordOfTheDay[letterIndex];
-    const letterCountInWord = wordOfTheDay
-      .split("")
-      .filter((l) => l === letter).length;
-    const letterCountInGuess = state.guesses[guessIndex]
-      .split("")
-      .filter((l: string) => l === letter).length;
-
-    if (letter === correctLetter) {
-      return "reveal-tile correct";
-    } else if (
-      wordOfTheDay.includes(letter) &&
-      letterCountInGuess <= letterCountInWord
-    ) {
-      return "reveal-tile present";
-    } else {
-      return "reveal-tile absent";
-    }
-  };
-
-  const getCurrentRow = () => {
-    return state.guesses.findIndex((guess) => guess === "");
-  };
 
   const restartGame = () => {
     resetWord();
@@ -72,7 +42,7 @@ export const Wordle = () => {
     [],
   );
 
-  const currentInputGuess = state.guesses.findIndex((g) => g.length !== 5);
+  const currentInputGuess = getCurrentRow(state.guesses);
 
   return (
     <>
@@ -95,7 +65,7 @@ export const Wordle = () => {
               >
                 {(
                   Array.from(
-                    guessIndex === getCurrentRow()
+                    guessIndex === getCurrentRow(state.guesses)
                       ? state.currentGuess.padEnd(5, " ")
                       : guess.padEnd(5, " "),
                   ) as string[]
@@ -103,7 +73,13 @@ export const Wordle = () => {
                   <div
                     className={cn(
                       "wordle-tile",
-                      getTileClass(letter, guessIndex, letterIndex),
+                      getTileClass(
+                        letter,
+                        guessIndex,
+                        letterIndex,
+                        state.guesses,
+                        wordOfTheDay,
+                      ),
                     )}
                     style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
                     key={letterIndex}
