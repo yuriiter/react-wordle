@@ -65,8 +65,12 @@ ol {
   margin-bottom: 1em;
 }
 
+ul {
+  list-style-type: disc;
+}
+
 li {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.8em;
 }
 
 code {

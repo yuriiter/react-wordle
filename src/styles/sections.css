@@ -43,3 +43,11 @@
 .button-question-mark {
   font-size: 1.5rem;
 }
+
+.instructions__list {
+  list-style-type: "\1F44D   ";
+
+  & li {
+    line-height: 1.3;
+  }
+}

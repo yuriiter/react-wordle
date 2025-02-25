@@ -6,7 +6,6 @@ import { useToast } from "../Toast/Toast";
 import { useGameState } from "@/store/GameState";
 import { GAME_STATUS } from "@/constants";
 import { useEventListener } from "@/hooks/useEventListener";
-import { CircleHelp } from "lucide-react";
 import { Dialog } from "../Dialog/Dialog";
 
 export const Wordle = () => {
@@ -74,6 +73,7 @@ export const Wordle = () => {
     (e) => {
       if (e.shiftKey && e.key === "R") restartGame();
       if (e.shiftKey && e.key === "W") revealWord();
+      if (e.key === "?") setShowInstructionsDialog(true);
     },
     [],
   );
@@ -147,12 +147,23 @@ export const Wordle = () => {
         isOpen={showInstructiionsDialog}
         onClose={() => setShowInstructionsDialog(false)}
       >
-        <p>How To Play</p>
-        <p>
-          Guess the Wordle in 6 tries. Each guess must be a valid 5-letter word.
-          The color of the tiles will change to show how close your guess was to
-          the word.
-        </p>
+        <h3>How To Play</h3>
+        <p>Guess the Wordle in 5 tries.</p>
+        <ul className="instructions__list">
+          <li>Each guess must be a valid 5-letter word.</li>
+          <li>
+            The color of the tiles will change to indicate how close your guess
+            is to the word.
+          </li>
+          <li>
+            A green tile means you guessed both the letter and its position
+            correctly.
+          </li>
+          <li>
+            A yellow tile means you guessed the letter correctly, but not its
+            position.
+          </li>
+        </ul>
       </Dialog>
     </>
   );
