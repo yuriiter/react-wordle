@@ -77,3 +77,8 @@
 .current-input {
   animation: PopIn 0.3s forwards;
 }
+
+.shaking-row {
+  animation: Shake 0.3s forwards;
+  display: inline-flex;
+}

@@ -8,7 +8,14 @@ import { GAME_STATUS } from "@/constants";
 import { useEventListener } from "@/hooks/useEventListener";
 
 export const Wordle = () => {
-  const { state, dispatch, wordOfTheDay, resetWord } = useWordle();
+  const {
+    state,
+    dispatch,
+    wordOfTheDay,
+    resetWord,
+    shakeRowOnErrorAnimation,
+    onRowShakeEnd,
+  } = useWordle();
   const { dispatch: gameStateDispatch } = useGameState();
   const { showToast } = useToast();
 
@@ -79,7 +86,19 @@ export const Wordle = () => {
         </p>
         <div className="wordle-grid">
           {state.guesses.map((guess, guessIndex) => (
-            <div className="wordle-row" key={guessIndex}>
+            <div
+              className={cn(
+                "wordle-row",
+                shakeRowOnErrorAnimation?.value === guessIndex &&
+                  shakeRowOnErrorAnimation?.className,
+              )}
+              onAnimationEnd={
+                shakeRowOnErrorAnimation?.value === guessIndex
+                  ? onRowShakeEnd
+                  : undefined
+              }
+              key={guessIndex}
+            >
               {(
                 Array.from(
                   guessIndex === getCurrentRow()

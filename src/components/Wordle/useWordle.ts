@@ -2,11 +2,13 @@ import { useReducer } from "react";
 import WORD_LIST from "@/assets/dictionary.json";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useRandomItem } from "@/hooks/useRandomItem";
+import { useToast } from "../Toast/Toast";
+import { useAnimationClass } from "@/hooks/useAnimationClass";
 
 const wordOfTheDay = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 
 const initialState = {
-  guesses: Array(5).fill(""),
+  guesses: Array(5).fill("") as string[],
   currentGuess: "",
 };
 
@@ -47,14 +49,26 @@ const wordleReducer = (state: WordleState, action: WordleAction) => {
 export const useWordle = () => {
   const [state, dispatch] = useReducer(wordleReducer, initialState);
   const [wordOfTheDay, resetWord] = useRandomItem(WORD_LIST);
+  const { showToast } = useToast();
+  const {
+    animation: shakeRowOnErrorAnimation,
+    triggerAnimation,
+    handleAnimationEnd: onRowShakeEnd,
+  } = useAnimationClass();
 
   useEventListener(
     document,
     "keydown",
     (e: KeyboardEvent) => {
       // if (state.gameOver) return;
-      if (e.key === "Enter" && state.currentGuess.length === 5) {
-        dispatch({ type: "SUBMIT_GUESS" });
+      if (e.key === "Enter") {
+        if (state.currentGuess.length !== 5) {
+          triggerAnimation(
+            "shaking-row",
+            state.guesses.findIndex((guess) => guess.length !== 5),
+          );
+          showToast("Not enough letters", "error");
+        } else dispatch({ type: "SUBMIT_GUESS" });
       } else if (e.key === "Backspace") {
         dispatch({
           type: "SET_GUESS",
@@ -69,5 +83,12 @@ export const useWordle = () => {
     [state],
   );
 
-  return { state, dispatch, wordOfTheDay, resetWord };
+  return {
+    state,
+    dispatch,
+    wordOfTheDay,
+    resetWord,
+    shakeRowOnErrorAnimation,
+    onRowShakeEnd,
+  };
 };
