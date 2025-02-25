@@ -38,8 +38,7 @@ export const useEventListener = <
   K extends
     | keyof WindowEventMap
     | keyof HTMLElementEventMap
-    | keyof DocumentEventMap
-    | string,
+    | keyof DocumentEventMap,
 >(
   element: ElementType,
   eventName: K,
