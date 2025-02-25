@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MouseEvent, useRef } from "react";
 import { X } from "lucide-react";
 import { useEventListener } from "@/hooks/useEventListener";
+import { CSSTransition } from "react-transition-group";
 
 interface DialogProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ export const Dialog = ({
   onClose,
   defaultOpen = false,
 }: DialogProps) => {
+  const dialogRef = useRef(null);
   const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
   const isOpen =
     controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
@@ -49,17 +51,32 @@ export const Dialog = ({
     }
   };
 
-  if (!isOpen) return null;
+  const handleClickOutside = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains("dialog-overlay")) handleClose();
+  };
 
   return (
-    <div className="dialog-overlay">
-      <div className="dialog-backdrop" />
-      <div className="dialog">
-        <button onClick={handleClose} className="dialog-close">
-          <X size={20} />
-        </button>
-        <div className="dialog-content">{children}</div>
+    <CSSTransition
+      in={isOpen}
+      nodeRef={dialogRef}
+      unmountOnExit
+      classNames="dialog"
+      addEndListener={() => {}}
+      appear
+    >
+      <div
+        ref={dialogRef}
+        className="dialog-overlay"
+        onClick={handleClickOutside}
+      >
+        <div className="dialog">
+          <button onClick={handleClose} className="dialog-close">
+            <X size={20} />
+          </button>
+          <div className="dialog-content">{children}</div>
+        </div>
       </div>
-    </div>
+    </CSSTransition>
   );
 };

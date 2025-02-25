@@ -1,13 +1,16 @@
 import { cn } from "@/utils";
 import { useWordle } from "./useWordle";
 import "./Wordle.css";
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
 import { useToast } from "../Toast/Toast";
 import { useGameState } from "@/store/GameState";
 import { GAME_STATUS } from "@/constants";
 import { useEventListener } from "@/hooks/useEventListener";
+import { CircleHelp } from "lucide-react";
+import { Dialog } from "../Dialog/Dialog";
 
 export const Wordle = () => {
+  const [showInstructiionsDialog, setShowInstructionsDialog] = useState(true);
   const {
     state,
     dispatch,
@@ -76,62 +79,81 @@ export const Wordle = () => {
   );
 
   return (
-    <section className="section">
-      <div className="wordle-container">
-        <h1>Wordle</h1>
-        <p>
-          Guess the 5 letter word. You have 5 tries. <br /> Press{" "}
-          <span className="bold">ENTER</span> to submit a guess and{" "}
-          <span className="bold">Backspace</span> to remove a letter.
-        </p>
-        <div className="wordle-grid">
-          {state.guesses.map((guess, guessIndex) => (
-            <div
-              className={cn(
-                "wordle-row",
-                shakeRowOnErrorAnimation?.value === guessIndex &&
-                  shakeRowOnErrorAnimation?.className,
-              )}
-              onAnimationEnd={
-                shakeRowOnErrorAnimation?.value === guessIndex
-                  ? onRowShakeEnd
-                  : undefined
-              }
-              key={guessIndex}
+    <>
+      <section className="section">
+        <div className="wordle-container">
+          <h1>Wordle</h1>
+          <p>
+            Guess the 5 letter word. You have 5 tries. <br /> Press{" "}
+            <span className="bold">ENTER</span> to submit a guess and{" "}
+            <span className="bold">Backspace</span> to remove a letter.
+          </p>
+          <div className="wordle-grid">
+            {state.guesses.map((guess, guessIndex) => (
+              <div
+                className={cn(
+                  "wordle-row",
+                  shakeRowOnErrorAnimation?.value === guessIndex &&
+                    shakeRowOnErrorAnimation?.className,
+                )}
+                onAnimationEnd={
+                  shakeRowOnErrorAnimation?.value === guessIndex
+                    ? onRowShakeEnd
+                    : undefined
+                }
+                key={guessIndex}
+              >
+                {(
+                  Array.from(
+                    guessIndex === getCurrentRow()
+                      ? state.currentGuess.padEnd(5, " ")
+                      : guess.padEnd(5, " "),
+                  ) as string[]
+                ).map((letter, letterIndex) => (
+                  <div
+                    className={cn(
+                      "wordle-tile",
+                      getTileClass(letter, guessIndex, letterIndex),
+                    )}
+                    style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
+                    key={letterIndex}
+                  >
+                    <div className="wordle-tile__front">{letter}</div>
+                    <div className="wordle-tile__back">{letter}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className="wordle-container__buttons">
+            <button onClick={restartGame} className="button button--secondary">
+              Restart
+              <span className="inline-keys">Shift + R</span>
+            </button>
+            <button onClick={revealWord} className="button button--secondary">
+              Word reveal
+              <span className="inline-keys">Shift + W</span>
+            </button>
+            <button
+              className="button-question-mark button--icon button button--secondary"
+              onClick={() => setShowInstructionsDialog(true)}
             >
-              {(
-                Array.from(
-                  guessIndex === getCurrentRow()
-                    ? state.currentGuess.padEnd(5, " ")
-                    : guess.padEnd(5, " "),
-                ) as string[]
-              ).map((letter, letterIndex) => (
-                <div
-                  className={cn(
-                    "wordle-tile",
-                    getTileClass(letter, guessIndex, letterIndex),
-                  )}
-                  style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
-                  key={letterIndex}
-                >
-                  <div className="wordle-tile__front">{letter}</div>
-                  <div className="wordle-tile__back">{letter}</div>
-                </div>
-              ))}
-            </div>
-          ))}
+              ?
+            </button>
+          </div>
         </div>
-        <div className="wordle-container__buttons">
-          <button onClick={restartGame} className="button button--secondary">
-            Restart
-            <span className="inline-keys">Shift + R</span>
-          </button>
-          <button onClick={revealWord} className="button button--secondary">
-            Word reveal
-            <span className="inline-keys">Shift + W</span>
-          </button>
-        </div>
-      </div>
-    </section>
+      </section>
+      <Dialog
+        isOpen={showInstructiionsDialog}
+        onClose={() => setShowInstructionsDialog(false)}
+      >
+        <p>How To Play</p>
+        <p>
+          Guess the Wordle in 6 tries. Each guess must be a valid 5-letter word.
+          The color of the tiles will change to show how close your guess was to
+          the word.
+        </p>
+      </Dialog>
+    </>
   );
 };

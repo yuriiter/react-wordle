@@ -23,3 +23,10 @@
     color: #fff;
   }
 }
+
+.button--icon {
+  height: 60px;
+  width: 60px;
+  min-width: 0;
+  padding: 0;
+}

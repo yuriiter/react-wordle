@@ -39,3 +39,7 @@
   justify-content: center;
   gap: 30px;
 }
+
+.button-question-mark {
+  font-size: 1.5rem;
+}
