@@ -6,6 +6,8 @@
   text-align: center;
   height: 100vh;
   width: 100%;
+  opacity: 0;
+  animation: FadeIn 0.5s forwards;
 }
 
 .start-section {
