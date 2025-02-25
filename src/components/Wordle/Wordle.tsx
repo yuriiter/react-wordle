@@ -20,8 +20,8 @@ export const Wordle = () => {
     guessIndex: number,
     letterIndex: number,
   ) => {
-    if (guessIndex > state.guesses.findIndex((guess) => guess === ""))
-      return "";
+    const firstEmptyRowIndex = state.guesses.findIndex((guess) => guess === "");
+    if (guessIndex > firstEmptyRowIndex && firstEmptyRowIndex !== -1) return "";
 
     if (guessIndex === state.guesses.findIndex((guess) => guess === "")) {
       if (letter !== " ") return "current-input";
