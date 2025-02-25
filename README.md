@@ -1,50 +1,57 @@
-# React + TypeScript + Vite
+# Wordle Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a Wordle clone built with React, TypeScript, and Vite. It's designed to be played entirely with the keyboard.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Keyboard-only gameplay
+- Simple UI
+- Toast notifications for feedback
+- Game state management (starting, playing, win/lose)
+- Instructions dialog
+- Animations for feedback (shaking row, tile reveals)
+- Option to reveal the word
+- Reusable components (Dialog, Toast)
+- Unit tested game logic
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. `git clone https://github.com/yuriiter/react-wordle.git`
+2. `cd react-wordle`
+3. `pnpm install`
+4. `pnpm dev`
 
-- Configure the top-level `parserOptions` property like this:
+## 🎮 How to Play
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Standard Wordle rules. Type a 5-letter word and press <kbd>Enter</kbd>. Green tile = correct letter and position. Yellow = correct letter, wrong position. Gray = incorrect letter. You have 5 tries.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## ⌨️ Keyboard Shortcuts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- <kbd>Shift + R</kbd>: Restart
+- <kbd>Shift + W</kbd>: Reveal word
+- <kbd>?</kbd>: Instructions
+- <kbd>Enter</kbd>: Start/Submit
+- <kbd>Backspace</kbd>: Delete letter
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 🧱 Project Structure
+
+- **`src/components`:** UI components (Dialog, GameStatus, Toast, Wordle)
+  - Wordle sub-components: Buttons, Captions, InstructionsDialog, Row
+- **`src/gameLogic.ts`:** Core game logic
+- **`src/hooks`:** Custom hooks (useAnimationClass, useEnter, useEventListener, useRandomItem)
+- **`src/store`:** Global game state (Context/useReducer)
+- **`src/utils.ts`:** Utility functions
+
+## 🛠️ Main Hooks
+
+- `useWordle`: Core game logic
+- `useWordleReducer`: Game state updates
+- `useKeyListeners`: Keyboard input
+- `useGameState`: Access to global game state
+
+## 📦 Main Components
+
+- `Wordle`: Main game
+- `GameStatus`: Game screens
+- `Toast`: Notifications
+- `Dialog`: Modal dialog
