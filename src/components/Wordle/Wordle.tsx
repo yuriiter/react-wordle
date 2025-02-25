@@ -10,14 +10,8 @@ import { Dialog } from "../Dialog/Dialog";
 
 export const Wordle = () => {
   const [showInstructiionsDialog, setShowInstructionsDialog] = useState(true);
-  const {
-    state,
-    dispatch,
-    wordOfTheDay,
-    resetWord,
-    shakeRowOnErrorAnimation,
-    onRowShakeEnd,
-  } = useWordle();
+  const { state, dispatch, wordOfTheDay, resetWord, animatedNodeRef } =
+    useWordle();
   const { dispatch: gameStateDispatch } = useGameState();
   const { showToast } = useToast();
 
@@ -73,10 +67,12 @@ export const Wordle = () => {
     (e) => {
       if (e.shiftKey && e.key === "R") restartGame();
       if (e.shiftKey && e.key === "W") revealWord();
-      if (e.key === "?") setShowInstructionsDialog(true);
+      if (e.key === "?") setShowInstructionsDialog((p) => !p);
     },
     [],
   );
+
+  const currentInputGuess = state.guesses.findIndex((g) => g.length !== 5);
 
   return (
     <>
@@ -91,16 +87,10 @@ export const Wordle = () => {
           <div className="wordle-grid">
             {state.guesses.map((guess, guessIndex) => (
               <div
-                className={cn(
-                  "wordle-row",
-                  shakeRowOnErrorAnimation?.value === guessIndex &&
-                    shakeRowOnErrorAnimation?.className,
-                )}
-                onAnimationEnd={
-                  shakeRowOnErrorAnimation?.value === guessIndex
-                    ? onRowShakeEnd
-                    : undefined
+                ref={
+                  currentInputGuess === guessIndex ? animatedNodeRef : undefined
                 }
+                className="wordle-row"
                 key={guessIndex}
               >
                 {(
@@ -162,6 +152,9 @@ export const Wordle = () => {
           <li>
             A yellow tile means you guessed the letter correctly, but not its
             position.
+          </li>
+          <li className="bold">
+            To input a letter, just press it on keyboard!
           </li>
         </ul>
       </Dialog>

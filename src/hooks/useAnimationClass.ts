@@ -1,27 +1,36 @@
-import { AnimationEvent, useCallback, useState } from "react";
+import { useCallback, useRef } from "react";
 
-export const useAnimationClass = () => {
-  const [animation, setAnimation] = useState<{
-    className: string;
-    value?: unknown;
-  } | null>(null);
+export const useAnimationClass = <T extends HTMLElement>() => {
+  const nodeRef = useRef<T>(null);
 
-  const triggerAnimation = useCallback((className: string, value?: unknown) => {
-    setAnimation({ className, value });
-  }, []);
+  const activeAnimations = useRef<Set<string>>(new Set());
 
-  const handleAnimationEnd = useCallback(
-    (event: AnimationEvent<HTMLElement>) => {
-      if (
-        animation &&
-        event.target instanceof HTMLElement &&
-        event.target.classList.contains(animation.className)
-      ) {
-        setAnimation(null);
-      }
+  const onAnimationEnd = (className: string) => (e: AnimationEvent) => {
+    const target = e.target as HTMLElement;
+    if (target) {
+      target.classList.remove(className);
+      activeAnimations.current.delete(className);
+    }
+  };
+
+  const triggerAnimation = useCallback(
+    (className: string) => {
+      const { current: node } = nodeRef;
+      if (!node) return;
+
+      node.classList.remove(className);
+
+      node.classList.add(className);
+      node.addEventListener("animationend", onAnimationEnd(className), {
+        once: true,
+      });
+      activeAnimations.current.add(className);
     },
-    [animation],
+    [nodeRef.current],
   );
 
-  return { animation, triggerAnimation, handleAnimationEnd };
+  return {
+    nodeRef,
+    triggerAnimation,
+  };
 };

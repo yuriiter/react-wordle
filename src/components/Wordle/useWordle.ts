@@ -50,11 +50,8 @@ export const useWordle = () => {
   const [state, dispatch] = useReducer(wordleReducer, initialState);
   const [wordOfTheDay, resetWord] = useRandomItem(WORD_LIST);
   const { showToast } = useToast();
-  const {
-    animation: shakeRowOnErrorAnimation,
-    triggerAnimation,
-    handleAnimationEnd: onRowShakeEnd,
-  } = useAnimationClass();
+  const { triggerAnimation, nodeRef: animatedNodeRef } =
+    useAnimationClass<HTMLDivElement>();
 
   useEventListener(
     document,
@@ -63,10 +60,7 @@ export const useWordle = () => {
       // if (state.gameOver) return;
       if (e.key === "Enter") {
         if (state.currentGuess.length !== 5) {
-          triggerAnimation(
-            "shaking-row",
-            state.guesses.findIndex((guess) => guess.length !== 5),
-          );
+          triggerAnimation("shaking-row");
           showToast("Not enough letters", "error");
         } else dispatch({ type: "SUBMIT_GUESS" });
       } else if (e.key === "Backspace") {
@@ -88,7 +82,6 @@ export const useWordle = () => {
     dispatch,
     wordOfTheDay,
     resetWord,
-    shakeRowOnErrorAnimation,
-    onRowShakeEnd,
+    animatedNodeRef,
   };
 };
