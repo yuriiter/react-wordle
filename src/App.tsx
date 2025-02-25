@@ -1,5 +1,5 @@
-import { ToastProvider } from "./components/Toast/Toast";
-import { GameStateProvider } from "./store/GameState";
+import { ToastProvider } from "./components/Toast";
+import { GameStateProvider } from "./store";
 import { Container } from "@/components/Container";
 
 function App() {

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, MouseEvent, useRef } from "react";
+import { ReactNode } from "react";
 import { X } from "lucide-react";
-import { useEventListener } from "@/hooks/useEventListener";
 import { CSSTransition } from "react-transition-group";
+import { useDialogSetup } from "./useDialogSetup";
 
 interface DialogProps {
-  children: React.ReactNode;
+  children: ReactNode;
   isOpen?: boolean;
   onClose?: () => void;
   defaultOpen?: boolean;
@@ -16,45 +16,9 @@ export const Dialog = ({
   onClose,
   defaultOpen = false,
 }: DialogProps) => {
-  const dialogRef = useRef(null);
-  const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
-  const isOpen =
-    controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
-
-  useEventListener(
-    document,
-    "keydown",
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        handleClose();
-      }
-    },
-    [isOpen],
+  const { handleClickOutside, handleClose, isOpen, dialogRef } = useDialogSetup(
+    { controlledIsOpen, defaultOpen, onClose },
   );
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  const handleClose = () => {
-    if (onClose) {
-      onClose();
-    } else {
-      setInternalIsOpen(false);
-    }
-  };
-
-  const handleClickOutside = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.classList.contains("dialog-overlay")) handleClose();
-  };
 
   return (
     <CSSTransition

@@ -1,7 +1,7 @@
 import wordleLogo from "@/assets/img/wordle-logo.png";
 import { GAME_STATUS } from "@/constants";
-import { useEnter } from "@/hooks/useEnter";
-import { useGameState } from "@/store/GameState";
+import { useEnter } from "@/hooks";
+import { useGameState } from "@/store";
 
 export const Starting = () => {
   const { dispatch } = useGameState();

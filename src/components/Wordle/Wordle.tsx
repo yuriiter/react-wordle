@@ -1,46 +1,20 @@
-import { cn } from "@/utils";
-import { useWordle } from "./useWordle";
-import "./Wordle.css";
-import { CSSProperties } from "react";
-import { useToast } from "../Toast/Toast";
-import { useGameState } from "@/store/GameState";
-import { GAME_STATUS } from "@/constants";
-import { useEventListener } from "@/hooks/useEventListener";
-import { Dialog } from "../Dialog/Dialog";
-import { getCurrentRow, getTileClass } from "@/gameLogic";
+import { useWordle } from "./hooks/useWordle";
+import { getCurrentRow } from "@/gameLogic";
+import { InstructionsDialog } from "./InstructionsDialog";
+import { Buttons } from "./Buttons";
+import { Captions } from "./Captions";
+import { Row } from "./Row";
 
 export const Wordle = () => {
   const {
     state,
-    dispatch,
     wordOfTheDay,
-    resetWord,
     animatedNodeRef,
-    showInstructiionsDialog,
+    showInstructionsDialog,
     setShowInstructionsDialog,
+    restartGame,
+    revealWord,
   } = useWordle();
-  const { dispatch: gameStateDispatch } = useGameState();
-  const { showToast } = useToast();
-
-  const restartGame = () => {
-    resetWord();
-    dispatch({ type: "RESET" });
-    gameStateDispatch({ type: "SET_STATUS", payload: GAME_STATUS.STARTING });
-  };
-
-  const revealWord = () =>
-    showToast(`Word of the day: ${wordOfTheDay}`, "info");
-
-  useEventListener(
-    document,
-    "keydown",
-    (e) => {
-      if (e.shiftKey && e.key === "R") restartGame();
-      if (e.shiftKey && e.key === "W") revealWord();
-      if (e.key === "?") setShowInstructionsDialog((p) => !p);
-    },
-    [],
-  );
 
   const currentInputGuess = getCurrentRow(state.guesses);
 
@@ -48,92 +22,31 @@ export const Wordle = () => {
     <>
       <section className="section">
         <div className="wordle-container">
-          <h1>Wordle</h1>
-          <p>
-            Guess the 5 letter word. You have 5 tries. <br /> Press{" "}
-            <span className="bold">ENTER</span> to submit a guess and{" "}
-            <span className="bold">Backspace</span> to remove a letter.
-          </p>
+          <Captions />
           <div className="wordle-grid">
             {state.guesses.map((guess, guessIndex) => (
-              <div
-                ref={
-                  currentInputGuess === guessIndex ? animatedNodeRef : undefined
-                }
-                className="wordle-row"
+              <Row
+                currentInputGuess={currentInputGuess}
+                guessIndex={guessIndex}
+                guess={guess}
+                animatedNodeRef={animatedNodeRef}
+                wordOfTheDay={wordOfTheDay}
+                state={state}
                 key={guessIndex}
-              >
-                {(
-                  Array.from(
-                    guessIndex === getCurrentRow(state.guesses)
-                      ? state.currentGuess.padEnd(5, " ")
-                      : guess.padEnd(5, " "),
-                  ) as string[]
-                ).map((letter, letterIndex) => (
-                  <div
-                    className={cn(
-                      "wordle-tile",
-                      getTileClass(
-                        letter,
-                        guessIndex,
-                        letterIndex,
-                        state.guesses,
-                        wordOfTheDay,
-                      ),
-                    )}
-                    style={{ "--reveal-tile-i": letterIndex } as CSSProperties}
-                    key={letterIndex}
-                  >
-                    <div className="wordle-tile__front">{letter}</div>
-                    <div className="wordle-tile__back">{letter}</div>
-                  </div>
-                ))}
-              </div>
+              />
             ))}
           </div>
-          <div className="wordle-container__buttons">
-            <button onClick={restartGame} className="button button--secondary">
-              Restart
-              <span className="inline-keys">Shift + R</span>
-            </button>
-            <button onClick={revealWord} className="button button--secondary">
-              Word reveal
-              <span className="inline-keys">Shift + W</span>
-            </button>
-            <button
-              className="button-question-mark button--icon button button--secondary"
-              onClick={() => setShowInstructionsDialog(true)}
-            >
-              ?
-            </button>
-          </div>
+          <Buttons
+            restartGame={restartGame}
+            revealWord={revealWord}
+            setShowInstructionsDialog={setShowInstructionsDialog}
+          />
         </div>
       </section>
-      <Dialog
-        isOpen={showInstructiionsDialog}
-        onClose={() => setShowInstructionsDialog(false)}
-      >
-        <h3>How To Play</h3>
-        <p>Guess the Wordle in 5 tries.</p>
-        <ul className="instructions__list">
-          <li>Each guess must be a valid 5-letter word.</li>
-          <li>
-            The color of the tiles will change to indicate how close your guess
-            is to the word.
-          </li>
-          <li>
-            A green tile means you guessed both the letter and its position
-            correctly.
-          </li>
-          <li>
-            A yellow tile means you guessed the letter correctly, but not its
-            position.
-          </li>
-          <li className="bold">
-            To input a letter, just press it on keyboard!
-          </li>
-        </ul>
-      </Dialog>
+      <InstructionsDialog
+        showInstructionsDialog={showInstructionsDialog}
+        setShowInstructionsDialog={setShowInstructionsDialog}
+      />
     </>
   );
 };

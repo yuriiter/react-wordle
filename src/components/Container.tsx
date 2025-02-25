@@ -1,6 +1,6 @@
-import { useGameState } from "@/store/GameState";
+import { useGameState } from "@/store";
 import { Wordle } from "./Wordle/Wordle";
-import { GameStatus } from "./GameStatus/GameStatus";
+import { GameStatus } from "./GameStatus";
 import { GAME_STATUS } from "@/constants";
 
 export const Container = () => {
@@ -8,11 +8,7 @@ export const Container = () => {
   return (
     <>
       <GameStatus />
-      {state.gameStatus === GAME_STATUS.PLAYING && (
-        <>
-          <Wordle />
-        </>
-      )}
+      {state.gameStatus === GAME_STATUS.PLAYING && <Wordle />}
     </>
   );
 };

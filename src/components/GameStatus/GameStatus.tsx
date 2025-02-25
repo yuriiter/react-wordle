@@ -1,4 +1,4 @@
-import { useGameState } from "@/store/GameState";
+import { useGameState } from "@/store";
 import { GAME_STATUS } from "@/constants";
 import { Starting } from "./Starting";
 

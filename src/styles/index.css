@@ -8,5 +8,6 @@
 @import "./components/typography.css";
 @import "./components/dialog.css";
 @import "./components/toast.css";
+@import "./components/wordle.css";
 
 @import "./sections.css";
