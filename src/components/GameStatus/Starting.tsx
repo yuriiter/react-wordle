@@ -16,7 +16,7 @@ export const Starting = () => {
       <img src={wordleLogo} className="start-section__img" alt="Wordle Logo" />
       <h2 className="start-section__title">Wordle</h2>
       <p className="start-section__par">
-        Get 6 chances to guess a 5-letter word.
+        Get 5 chances to guess a 5-letter word.
       </p>
       <button className="button start-section__btn" onClick={startTheGame}>
         Start the game!
