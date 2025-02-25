@@ -60,6 +60,8 @@ export const useWordle = () => {
           type: "SET_GUESS",
           payload: state.currentGuess.slice(0, -1),
         });
+      } else if (e.shiftKey || e.altKey || e.ctrlKey) {
+        void 0;
       } else if (state.currentGuess.length < 5 && /^[a-z]$/.test(e.key)) {
         dispatch({ type: "SET_GUESS", payload: state.currentGuess + e.key });
       }
