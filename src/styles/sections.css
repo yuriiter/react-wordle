@@ -45,7 +45,7 @@
 }
 
 .instructions__list {
-  list-style-type: "\1F44D   ";
+  list-style-type: "👍   ";
 
   & li {
     line-height: 1.3;
