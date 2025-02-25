@@ -21,7 +21,7 @@ export const useWordle = () => {
   useEffect(() => {
     if (checkWin(state.guesses, wordOfTheDay)) {
       showToast("You have won! 🎉", "success");
-    } else if (checkLose(state.guesses)) {
+    } else if (checkLose(state.guesses, wordOfTheDay)) {
       showToast(
         "You ran out of guesses, restart the game and try again!",
         "error",

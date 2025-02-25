@@ -44,7 +44,7 @@ export const useKeyListeners = ({
     (e: KeyboardEvent) => {
       if (
         checkWin(state.guesses, wordOfTheDay) ||
-        checkLose(state.guesses) ||
+        checkLose(state.guesses, wordOfTheDay) ||
         showInstructionsDialog
       )
         return;

@@ -30,8 +30,10 @@ export const checkWin = (guesses: string[], wordOfTheDay: string): boolean => {
   return guesses.some((guess) => guess === wordOfTheDay);
 };
 
-export const checkLose = (guesses: string[]): boolean => {
-  return guesses.every((guess) => guess !== "");
+export const checkLose = (guesses: string[], wordOfTheDay: string): boolean => {
+  return (
+    guesses.every((guess) => guess !== "") && !checkWin(guesses, wordOfTheDay)
+  );
 };
 
 export const getTileClass = (
