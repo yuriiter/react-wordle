@@ -1,6 +1,6 @@
 export type ToastType = "success" | "error" | "info" | "warning";
 export type ToastData = {
-  id: number;
+  id: string | number;
   message: string;
   type: ToastType;
 };

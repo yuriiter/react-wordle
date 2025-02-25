@@ -1,13 +1,9 @@
 import { X } from "lucide-react";
-import { ToastType } from "./types";
+import { ToastData } from "./types";
 
 type ToastProps = {
-  toast: {
-    id: number;
-    message: string;
-    type: ToastType;
-  };
-  onRemove: (id: number) => void;
+  toast: ToastData;
+  onRemove: (id: number | string) => void;
 };
 
 export const Toast = ({ toast, onRemove }: ToastProps) => (

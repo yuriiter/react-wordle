@@ -1,6 +1,7 @@
 import { createContext, useState, useCallback, PropsWithChildren } from "react";
 import { Toast } from "./Toast";
 import { ToastType, ToastData, ToastContextType } from "./types";
+import { v4 as uuid } from "uuid";
 
 export const ToastContext = createContext<ToastContextType | undefined>(
   undefined,
@@ -11,7 +12,7 @@ export const ToastProvider = ({ children }: PropsWithChildren) => {
 
   const showToast = useCallback(
     (message: string, type: ToastType = "info", duration = 2500) => {
-      const id = Date.now();
+      const id = uuid();
       setToasts((prev) => [...prev, { id, message, type }]);
 
       setTimeout(() => {
@@ -21,7 +22,7 @@ export const ToastProvider = ({ children }: PropsWithChildren) => {
     [],
   );
 
-  const removeToast = useCallback((id: number) => {
+  const removeToast = useCallback((id: number | string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
