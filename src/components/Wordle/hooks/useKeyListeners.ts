@@ -31,8 +31,8 @@ export const useKeyListeners = ({
     document,
     "keydown",
     (e) => {
-      if (e.shiftKey && e.key === "R") restartGame();
-      if (e.shiftKey && e.key === "W") revealWord();
+      if (e.shiftKey && (e.key === "R" || e.key === "r")) restartGame();
+      if (e.shiftKey && (e.key === "W" || e.key === "w")) revealWord();
       if (e.key === "?") setShowInstructionsDialog((p) => !p);
     },
     [],
@@ -58,10 +58,13 @@ export const useKeyListeners = ({
           type: "SET_GUESS",
           payload: state.currentGuess.slice(0, -1),
         });
-      } else if (e.shiftKey || e.altKey || e.ctrlKey) {
+      } else if (e.altKey || e.ctrlKey) {
         void 0;
-      } else if (state.currentGuess.length < 5 && /^[a-z]$/.test(e.key)) {
-        dispatch({ type: "SET_GUESS", payload: state.currentGuess + e.key });
+      } else if (state.currentGuess.length < 5 && /^[a-zA-Z]$/.test(e.key)) {
+        dispatch({
+          type: "SET_GUESS",
+          payload: state.currentGuess + e.key.toLowerCase(),
+        });
       }
     },
     [state, showInstructionsDialog],
